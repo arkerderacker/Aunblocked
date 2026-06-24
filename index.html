@@ -1,0 +1,327 @@
+//testing
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glass Loading</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+overflow:hidden;
+font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+
+background:
+linear-gradient(
+135deg,
+#040001 0%,
+#0d0004 15%,
+#1b0712 30%,
+#3b356e 45%,
+#274f96 60%,
+#1a6eb6 80%,
+#1185d8 100%
+);
+
+background-size:200% 200%;
+
+animation:liquidBackground 15s ease-in-out infinite alternate;
+
+position:relative;
+}
+
+body::before{
+content:"";
+position:fixed;
+inset:-20%;
+
+background:
+linear-gradient(
+125deg,
+rgba(255,255,255,.08),
+transparent 25%,
+rgba(255,255,255,.03) 50%,
+transparent 75%
+);
+
+backdrop-filter:blur(40px);
+-webkit-backdrop-filter:blur(40px);
+
+mix-blend-mode:screen;
+
+animation:glassShift 18s ease-in-out infinite alternate;
+
+pointer-events:none;
+}
+
+@keyframes liquidBackground{
+0%{
+background-position:0% 50%;
+}
+100%{
+background-position:100% 50%;
+}
+}
+
+@keyframes glassShift{
+0%{
+transform:translateX(-4%) translateY(-2%) scale(1);
+}
+100%{
+transform:translateX(4%) translateY(2%) scale(1.08);
+}
+}
+
+/* 3D TEXT */
+.title{
+font-size:64px;
+font-weight:800;
+letter-spacing:1px;
+color:rgba(255,255,255,0.95);
+
+text-shadow:
+0 1px 0 rgba(255,255,255,0.2),
+0 2px 0 rgba(0,0,0,0.2),
+0 6px 20px rgba(0,0,0,0.35),
+0 0 25px rgba(120,200,255,0.25);
+
+animation:float 3.5s ease-in-out infinite;
+}
+
+@keyframes float{
+0%,100%{transform:translateY(0px)}
+50%{transform:translateY(-6px)}
+}
+
+/* loader */
+.loader{
+margin-top:30px;
+width:280px;
+height:18px;
+
+border-radius:999px;
+
+background:rgba(255,255,255,0.12);
+
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+
+border:1px solid rgba(255,255,255,0.2);
+
+overflow:hidden;
+
+position:relative;
+
+box-shadow:
+inset 0 1px 0 rgba(255,255,255,0.6),
+0 10px 25px rgba(0,0,0,0.25);
+}
+
+.fill{
+position:absolute;
+left:0;
+top:0;
+height:100%;
+width:0%;
+
+border-radius:999px;
+
+background:
+linear-gradient(90deg,
+rgba(255,255,255,0.2),
+rgba(255,255,255,0.6),
+rgba(255,255,255,0.25));
+
+animation:load 12s ease forwards;
+}
+
+.fill::after{
+content:"";
+position:absolute;
+top:0;
+left:-300%;
+width:120%;
+height:100%;
+
+background:linear-gradient(
+90deg,
+transparent 0%,
+rgba(255,255,255,0.15) 35%,
+rgba(255,255,255,0.8) 50%,
+rgba(255,255,255,0.15) 65%,
+transparent 100%
+);
+
+filter:blur(1px);
+
+animation:shine 3s linear infinite;
+}
+
+@keyframes load{
+from{width:0%}
+to{width:100%}
+}
+
+@keyframes shine{
+0%{
+transform:translateX(0);
+}
+100%{
+transform:translateX(700%);
+}
+}
+
+/* bottom text */
+.message-wrap{
+position:relative;
+height:24px;
+margin-top:22px;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+width:100%;
+}
+
+.message{
+position:absolute;
+
+font-size:16px;
+font-weight:500;
+letter-spacing:.3px;
+
+color:rgba(255,255,255,0.5);
+
+opacity:1;
+}
+
+.first{
+animation:firstMsg 12s infinite;
+}
+
+.second{
+animation:secondMsg 12s infinite;
+}
+.third{
+animation:thirdMsg 12s infinite;
+}
+
+@keyframes firstMsg{
+
+0%,5%{
+opacity:0;
+transform:translateY(20px);
+}
+
+10%,30%{
+opacity:1;
+transform:translateY(0);
+}
+
+35%,100%{
+opacity:0;
+transform:translateY(-20px);
+}
+}
+
+@keyframes secondMsg{
+
+0%,35%{
+opacity:0;
+transform:translateY(20px);
+}
+
+40%,60%{
+opacity:1;
+transform:translateY(0);
+}
+
+65%,100%{
+opacity:0;
+transform:translateY(-20px);
+}
+}
+
+@keyframes thirdMsg{
+
+0%,65%{
+opacity:0;
+transform:translateY(20px);
+}
+
+70%,90%{
+opacity:1;
+transform:translateY(0);
+}
+
+95%,100%{
+opacity:0;
+transform:translateY(-20px);
+}
+}
+
+.screen{
+display:flex;
+flex-direction:column;
+align-items:center;
+
+animation:
+exitScreen 1.4s cubic-bezier(.16,1,.3,1) forwards;
+
+animation-delay:12.3s;
+}
+
+@keyframes exitScreen{
+
+0%{
+opacity:1;
+transform:scale(1);
+filter:blur(0);
+}
+
+40%{
+opacity:1;
+transform:scale(.92);
+}
+
+65%{
+opacity:1;
+transform:scale(1.03);
+}
+
+100%{
+opacity:0;
+transform:scale(.75);
+filter:blur(20px);
+}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="screen">
+
+<div class="title">testing</div>
+
+<div class="loader">
+<div class="fill"></div>
+</div>
+
+<div class="message-wrap">
+<div class="message first">Please hang on a while</div>
+<div class="message second">Everything will be ready soon</div>
+<div class="message third">school cant block shi</div>
+</div>
+
+</div>
+</body>
+</html>
