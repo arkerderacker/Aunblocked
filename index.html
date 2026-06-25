@@ -1,4 +1,4 @@
-//testing
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -477,6 +477,17 @@ import {
   signInWithPopup
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  query,
+  where,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
 // Your Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyDID-Szx_uEzvBaBQN_ES2NjOcDP_bg2UM",
@@ -492,18 +503,68 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+const db = getFirestore(app);
 
 // Google login button
+
 document.getElementById("googleLogin").addEventListener("click", async () => {
   try {
+
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    console.log("User:", user.displayName, user.email);
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
 
-    alert("Welcome " + user.displayName);
+    if (!userSnap.exists()) {
 
-    // hide auth screen after login
+      let displayName = "";
+
+      while (true) {
+
+        displayName = prompt("Choose a display name:");
+
+        if (!displayName) continue;
+
+        displayName = displayName.trim();
+
+        if (displayName.length < 3) {
+          alert("Display name must be at least 3 characters.");
+          continue;
+        }
+
+        const q = query(
+          collection(db, "users"),
+          where("displayName", "==", displayName)
+        );
+
+        const existing = await getDocs(q);
+
+        if (!existing.empty) {
+          alert("That display name is already taken.");
+          continue;
+        }
+
+        break;
+      }
+
+      await setDoc(userRef, {
+        uid: user.uid,
+        email: user.email,
+        displayName,
+        photoURL: user.photoURL,
+        createdAt: Date.now()
+      });
+
+      alert("Welcome " + displayName);
+
+    } else {
+
+      const userData = userSnap.data();
+      alert("Welcome back " + userData.displayName);
+
+    }
+
     document.getElementById("authScreen").classList.remove("show");
 
   } catch (err) {
@@ -511,6 +572,7 @@ document.getElementById("googleLogin").addEventListener("click", async () => {
     alert("Login failed");
   }
 });
+
 </script>
 
 <script>
