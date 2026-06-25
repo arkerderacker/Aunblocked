@@ -1,4 +1,4 @@
-//testing
+//testing v0.12
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -462,7 +462,7 @@ text-align:center;
     </button>
 
     <div class="small-text">
-      First time? you’ll set a display name after login
+      Sign in to continue
     </div>
 
   </div>
@@ -476,17 +476,6 @@ import {
   GoogleAuthProvider,
   signInWithPopup
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  collection,
-  query,
-  where,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 // Your Firebase config
 const firebaseConfig = {
@@ -503,68 +492,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-const db = getFirestore(app);
 
 // Google login button
-
 document.getElementById("googleLogin").addEventListener("click", async () => {
   try {
-
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
 
-    const userRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userRef);
+    console.log("User:", user.displayName, user.email);
 
-    if (!userSnap.exists()) {
+    alert("Welcome " + user.displayName);
 
-      let displayName = "";
-
-      while (true) {
-
-        displayName = prompt("Choose a display name:");
-
-        if (!displayName) continue;
-
-        displayName = displayName.trim();
-
-        if (displayName.length < 3) {
-          alert("Display name must be at least 3 characters.");
-          continue;
-        }
-
-        const q = query(
-          collection(db, "users"),
-          where("displayName", "==", displayName)
-        );
-
-        const existing = await getDocs(q);
-
-        if (!existing.empty) {
-          alert("That display name is already taken.");
-          continue;
-        }
-
-        break;
-      }
-
-      await setDoc(userRef, {
-        uid: user.uid,
-        email: user.email,
-        displayName,
-        photoURL: user.photoURL,
-        createdAt: Date.now()
-      });
-
-      alert("Welcome " + displayName);
-
-    } else {
-
-      const userData = userSnap.data();
-      alert("Welcome back " + userData.displayName);
-
-    }
-
+    // hide auth screen after login
     document.getElementById("authScreen").classList.remove("show");
 
   } catch (err) {
@@ -572,7 +511,6 @@ document.getElementById("googleLogin").addEventListener("click", async () => {
     alert(err.message);
   }
 });
-
 </script>
 
 <script>
